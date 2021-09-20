@@ -39,7 +39,7 @@ Channel
     .set { ch_input }
 
 // Define Process
-process step_1 {
+process subset_vcfs {
     tag "$sample_name"
     label 'low_memory'
     publishDir "${params.outdir}", mode: 'copy'
@@ -57,20 +57,3 @@ process step_1 {
     head $input_file > input_file_head.txt
     """
   }
-
-process report {
-    publishDir "${params.outdir}/MultiQC", mode: 'copy'
-
-    input:
-    file (table) from ch_out
-    
-    output:
-    file "multiqc_report.html" into ch_multiqc_report
-
-    script:
-    """
-    cp -r ${params.report_dir}/* .
-    Rscript -e "rmarkdown::render('report.Rmd',params = list(res_table='$table'))"
-    mv report.html multiqc_report.html
-    """
-}

@@ -45,15 +45,14 @@ process subset_vcfs {
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
-    set val(sample_name), file(input_file) from ch_input
-    file(run_sh_script) from ch_run_sh_script
+    set file(vcf_WGS), file(vcf_WGS_idx) from ch_input
+    file(region_file) from ch_region_file
     
     output:
-    file "input_file_head.txt" into ch_out
+    file "*_exons_plus1K" into ch_out
 
     script:
     """
-    run.sh
-    head $input_file > input_file_head.txt
+    tabix -R $region_file $vcf_WGS | bgzip > ${vcf_WGS.baseName}_exons_plus1k.vcf.gz
     """
   }

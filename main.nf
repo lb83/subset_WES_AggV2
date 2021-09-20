@@ -35,18 +35,24 @@ Channel
     .fromPath(params.input)
     .ifEmpty { exit 1, "Cannot find input file : ${params.input}" }
     .splitCsv(skip:1)
-    .map {sample_name, file_path -> [ sample_name, file_path ] }
+    .map {vcf_WGS, vcf_WGS_idx -> [ vcf_WGS, vcf_WGS_idx ] }
     .set { ch_input }
+
+// Define Channels from input
+Channel
+    .fromPath(params.input)
+    .ifEmpty { exit 1, "Cannot find input file : ${params.input}" }
+    .set { ch_region_file }
 
 // Define Process
 process subset_vcfs {
     tag "$sample_name"
     label 'low_memory'
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}", mode: 'copy' // in results by default
 
     input:
     set file(vcf_WGS), file(vcf_WGS_idx) from ch_input
-    file(region_file) from ch_region_file
+    each file(region_file) from ch_region_file // file is going to be lost after firts iteration.
     
     output:
     file "*_exons_plus1K" into ch_out

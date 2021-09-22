@@ -35,7 +35,7 @@ Channel
     .fromPath(params.table_vcf_location)
     .ifEmpty { exit 1, "Cannot find input file : ${params.table_vcf_location}" }
     .splitCsv(skip:1)
-    .map {vcf_WGS, vcf_WGS_idx -> [ vcf_WGS, vcf_WGS_idx ] }
+    .map {file_name, vcf_WGS, vcf_WGS_idx -> [ file_name, vcf_WGS, vcf_WGS_idx ] }
     .set { ch_input }
 
 // Define Channels from input
@@ -51,7 +51,7 @@ process subset_vcfs {
     publishDir "${params.outdir}", mode: 'copy' // in results by default
 
     input:
-    set file(vcf_WGS), file(vcf_WGS_idx) from ch_input
+    set val(file_name), file(vcf_WGS), file(vcf_WGS_idx) from ch_input
     each file(region_file) from ch_region_file // file is going to be lost after firts iteration.
     
     output:

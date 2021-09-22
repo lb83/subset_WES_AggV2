@@ -32,16 +32,16 @@ ch_run_sh_script = Channel.fromPath("${projectDir}/bin/run.sh")
 
 // Define Channels from input
 Channel
-    .fromPath(params.input)
-    .ifEmpty { exit 1, "Cannot find input file : ${params.input}" }
+    .fromPath(params.table_vcf_location)
+    .ifEmpty { exit 1, "Cannot find input file : ${params.table_vcf_location}" }
     .splitCsv(skip:1)
     .map {vcf_WGS, vcf_WGS_idx -> [ vcf_WGS, vcf_WGS_idx ] }
     .set { ch_input }
 
 // Define Channels from input
 Channel
-    .fromPath(params.input)
-    .ifEmpty { exit 1, "Cannot find input file : ${params.input}" }
+    .fromPath(params.region_file_location)
+    .ifEmpty { exit 1, "Cannot find input file : ${params.region_file_location}" }
     .set { ch_region_file }
 
 // Define Process

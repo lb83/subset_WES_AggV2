@@ -1,36 +1,20 @@
-## Changelog
+## 1.0.0
 
-PR centric changelog with description of notable changes implemented in a PR.
+PR: 
 
-### 0.0.0.9000
-
-PR: https://github.com/<github-username>/<github-repo>/pull/1
+Inaugural container addition to the repo with tabix and relevant tools
 
 
-#### Added
+<details>
+<summary> The bundle contains the following tools: </summary>
 
-<!-- 
-Example: 
-- Added Dockerfile 
--->
+- htslib
+- vcftools
+- bedtools
+- bcftools
+- tabix
+- gawk
+- gzip
 
-#### Changed
 
-<!-- 
-Example:
-- Updated template ci.yml test
--->
-
-#### Fixed
-
-<!-- 
-Example:
-- Fixed bug xxx
--->
-
-#### Removed
-
-<!-- 
-Example:
-- Removed containers/ folder
--->
+</details>

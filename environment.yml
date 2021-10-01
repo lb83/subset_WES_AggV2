@@ -1,15 +1,12 @@
-name: conda-env-name
+name: tabix-utils
 channels:
   - conda-forge
   - bioconda
-  - defaults
-  - anaconda
 dependencies:
-  - r-base=4.0.3
-  - r-magrittr
-  - r-dt
-  - r-htmltools
-  - r-stringr
-  - r-dplyr
-  - r-kableextra
-  - fonts-anaconda
+  - bioconda::htslib
+  - bioconda::vcftools
+  - bioconda::bedtools
+  - bioconda::bcftools
+  - bioconda::tabix
+  - conda-forge::gawk
+  - conda-forge::gzip

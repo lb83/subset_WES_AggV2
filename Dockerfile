@@ -1,26 +1,27 @@
-FROM continuumio/miniconda3@sha256:a2e6aa4cd0b6dd696ae9e3e5732943250a977ab3a42b2fe5fb7ef0c19d2d9f16
-LABEL description="Dockerfile containing all the requirements for the report of - " \
-      author="your_email@website.domain"
+# Full contents of Dockerfile
+# continuumio/miniconda3:4.9.2
+FROM continuumio/miniconda3@sha256:7838d0ce65783b0d944c19d193e2e6232196bada9e5f3762dc7a9f07dc271179
+LABEL description="Base docker image with all the necessary tools to index and subset vcf files"
 
+USER root
 ARG ENV_NAME="base"
 
-RUN apk add --no-cache bash=5.0.17-r0 procps=3.3.16-r0 libxt-dev=1.2.0-r0
+RUN apt-get --allow-releaseinfo-change update \
+    && apt-get install -y \
+              procps \
+    && rm -rf /var/lib/apt/lists/*
 
+
+# Update the base conda environment
 COPY environment.yml /
-RUN conda env update -n ${ENV_NAME} -f environment.yml && conda clean -a
+RUN conda env update --name ${ENV_NAME} --file /environment.yml && \
+    conda clean -a -y
 
 # Add conda installation dir to PATH (instead of doing 'conda activate')
 ENV PATH /opt/conda/envs/${ENV_NAME}/bin:$PATH
 
-# Dump the details of the installed packages to a file for posterity
+# Dump the details of the installed packages to a file for reproducibility
 RUN conda env export --name ${ENV_NAME} > ${ENV_NAME}_exported.yml
 
-# Initialise bash for conda
+# Initialise the terminal for bash
 RUN conda init bash
-
-# Copy additional scripts
-## bin/report/ files will be flatly copied into bin/ (no report folder)
-RUN mkdir /opt/bin/
-COPY bin/* /opt/bin/
-RUN chmod +x /opt/bin/*
-ENV PATH="$PATH:/opt/bin/"

@@ -55,14 +55,15 @@ process subset_vcfs {
     each file(region_file) from ch_region_file // file is going to be lost after firts iteration.
     
     output:
-    file "*_exons_plus1K" into ch_out
-
+    file "*_exons_plus1K*" into ch_out
+    
     script:
     if (params.generate_vcf_index == true)
     """
     tabix -R $region_file $vcf_WGS | bgzip > ${vcf_WGS.baseName}_exons_plus1k.vcf.gz
-    
-    # <add tabix command for generating the index> 
+    gunzip  ${vcf_WGS.baseName}_exons_plus1k.vcf.gz
+    (grep ^# ${vcf_WGS.baseName}_exons_plus1k.vcf ; grep -v ^# ${vcf_WGS.baseName}_exons_plus1k.vcf | sort -k1,1 -k2,2n) | bgzip > ${vcf_WGS.baseName}_exons_plus1k_sorted.vcf.gz
+    tabix -C -f ${vcf_WGS.baseName}_exons_plus1k_sorted.vcf.gz
     """
     else
     """

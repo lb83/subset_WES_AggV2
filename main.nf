@@ -55,7 +55,7 @@ process subset_vcfs {
     each file(region_file) from ch_region_file // file is going to be lost after firts iteration.
     
     output:
-    file "*_exons_plus1K*" into ch_out
+    file "*_exons_plus1k*" into ch_out
     
     script:
     if (params.generate_vcf_index == true)

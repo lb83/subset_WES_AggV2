@@ -58,6 +58,13 @@ process subset_vcfs {
     file "*_exons_plus1K" into ch_out
 
     script:
+    if (params.generate_vcf_index == true)
+    """
+    tabix -R $region_file $vcf_WGS | bgzip > ${vcf_WGS.baseName}_exons_plus1k.vcf.gz
+    
+    # <add tabix command for generating the index> 
+    """
+    else
     """
     tabix -R $region_file $vcf_WGS | bgzip > ${vcf_WGS.baseName}_exons_plus1k.vcf.gz
     """

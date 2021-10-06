@@ -64,9 +64,11 @@ process subset_vcfs {
     gunzip  ${vcf_WGS.baseName}_exons_plus1k.vcf.gz
     (grep ^# ${vcf_WGS.baseName}_exons_plus1k.vcf ; grep -v ^# ${vcf_WGS.baseName}_exons_plus1k.vcf | sort -k1,1 -k2,2n) | bgzip > ${vcf_WGS.baseName}_exons_plus1k_sorted.vcf.gz
     tabix -C -f ${vcf_WGS.baseName}_exons_plus1k_sorted.vcf.gz
+    rm $vcf_WGS $vcf_WGS_idx ${vcf_WGS.baseName}_exons_plus1k.vcf
     """
     else
     """
     tabix -R $region_file $vcf_WGS | bgzip > ${vcf_WGS.baseName}_exons_plus1k.vcf.gz
+    rm $vcf_WGS $vcf_WGS_idx
     """
   }

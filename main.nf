@@ -31,12 +31,29 @@ projectDir = workflow.projectDir
 ch_run_sh_script = Channel.fromPath("${projectDir}/bin/run.sh")
 
 // Define Channels from input
+
+if (!params.table_vcf_location && !params.input_folder_location) {
+    exit 1, "Please provide input either via a csv with --table_vcf_location or a path to a folder with --input_folder_location"
+}
+
+if (params.table_vcf_location) {
 Channel
     .fromPath(params.table_vcf_location)
     .ifEmpty { exit 1, "Cannot find input file : ${params.table_vcf_location}" }
     .splitCsv(skip:1)
     .map {file_name, vcf_WGS, vcf_WGS_idx -> [ file_name, file(vcf_WGS), file(vcf_WGS_idx) ] }
     .set { ch_input }
+}
+
+if (params.input_folder_location) {
+Channel.fromPath("${params.input_folder_location}/**${params.file_pattern}*.{${params.file_suffix},${params.index_suffix}}")
+       .map { it -> [ file(it).simpleName.minus(".${params.index_suffix}").minus(".${params.file_suffix}"), "s3:/"+it] }
+       .groupTuple(by:0)
+       .map { name, files_pair -> [ name, files_pair[0], files_pair[1] ] }
+       .map { name, base_file, index -> [ name, file(base_file), file(index) ] }
+       .take( params.number_of_files_to_process )
+       .set { ch_input }
+}
 
 // Define Channels from input
 Channel

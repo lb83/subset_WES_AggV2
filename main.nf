@@ -55,8 +55,6 @@ Channel.fromPath("${params.input_folder_location}/**.{${params.file_suffix},${pa
        .set { ch_input }
 }
 
-ch_input.view()
-
 // Define Channels from input
 Channel
     .fromPath(params.region_file_location)

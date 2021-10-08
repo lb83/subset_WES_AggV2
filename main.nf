@@ -46,7 +46,7 @@ Channel
 }
 
 if (params.input_folder_location) {
-Channel.fromPath("${params.input_folder_location}/**.{${params.file_suffix},${params.index_suffix}}")
+Channel.fromPath("${params.input_folder_location}/**${params.file_pattern}*.{${params.file_suffix},${params.index_suffix}}")
        .map { it -> [ file(it).simpleName.minus(".${params.index_suffix}").minus(".${params.file_suffix}"), "s3:/"+it] }
        .groupTuple(by:0)
        .map { name, files_pair -> [ name, files_pair[0], files_pair[1] ] }
